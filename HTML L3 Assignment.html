@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <script>
+   function numVal(val)
+   {
+     if(val >= 100)
+     {
+       alert("You have entered a number greater than or equals 100");
+     }
+     else
+     {
+       if (typeof(Storage) !== "undefined") 
+       {
+          localStorage.setItem("userValue", val);
+       }
+       else
+       {
+           document.getElementById("result").innerHTML = "Sorry, your browser does not support Web Storage...";
+       }
+     }
+   }
+
+var w;
+function startWorker() {
+  if(typeof(Worker) !== "undefined") {
+    if(typeof(w) == "undefined") {
+      w = new Worker("primeCheck.js");
+    }
+    w.onmessage = function(event) {
+      document.getElementById("result").innerHTML = event.data;
+    };
+  } else {
+    document.getElementById("result").innerHTML = "Sorry, your browser does not support Web Workers...";
+  }
+}
+
+function stopWorker() { 
+  w.terminate();
+  w = undefined;
+}
+ </script>
+</head>
+<body>
+<label for="user_val">Please enter a number less than 100 :</label>
+<input type="number" id="user_val" name="user_val" min="0" max="100" onchange = numVal(this.value)>
+<br><br>
+<p>Count numbers: <output id="result"></output></p>
+<button onclick="startWorker()">Start Worker</button> 
+<button onclick="stopWorker()">Stop Worker</button>
+</body>
+</html>
